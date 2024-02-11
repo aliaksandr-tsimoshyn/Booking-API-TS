@@ -1,17 +1,17 @@
 import { expect } from "@playwright/test"
 import { settings } from "../utils/settings"
 import { test } from "../utils/extensions"
-import { createAuthorizedAPIContext } from "../utils/functions"
+import { createAuthorizedAPIContext } from "../utils/helpers"
 
-test.beforeAll(async () => {
+/*test.beforeAll(async () => {
   settings.authorizedRequest = await createAuthorizedAPIContext(
     settings.activeUser.email,
     settings.activeUser.password
   )
-})
+})*/
 
 test.describe(`API Tests`, () => {
-  test.only(`@api Login To Espresa`, async ({ request }) => {
+  test(`@api Login To Espresa`, async ({ request }) => {
     const loginResponse = await request.post(`${settings.baseURL}api/auth`, {
       data: {
         username: settings.activeUser.email,
@@ -51,4 +51,21 @@ test.describe(`API Tests`, () => {
 
     console.log(`${userCoins} LX Coins are available to the user`)
   })
+})
+
+test.only(`Get Token`, async ({ request }) => {
+  const loginResponse = await request.post(`https://bookings-api-667x.onrender.com/token`, {
+    form: {
+      username: `alex`,
+      password: `7777777`
+    },
+  })
+  await expect(loginResponse, `The user isn't logged in`).toBeOK()
+
+  const loginStatus = loginResponse.status()
+
+  const token = (await loginResponse.json()).access_token
+
+  console.log(`The user is logged in with status code ${loginStatus}`)
+  console.log(token)
 })
