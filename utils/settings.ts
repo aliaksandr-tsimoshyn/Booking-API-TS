@@ -29,5 +29,15 @@ export const settings: Settings = {
   },
 }
 
+/*{
+  "full_name": "ALEX",
+  "email": "alex@gmail.com",
+  "role": "admin",
+  "username": "alex",
+  "password": 7777777,
+  "phone_number": "1111111",
+  "user_id": 347
+}*/
+
 
 
