@@ -3,8 +3,8 @@ on: workflow_dispatch
 
 env:
   URL: ${{ vars.URLQA }}
-  EMAIL: ${{ vars.EMAIL }}
-  PASSWORD: ${{ vars.PASSWORD }}
+  EMAIL: ${{ vars.MYUSERNAME }}
+  PASSWORD: ${{ vars.MYPASSWORD }}
 
 permissions:
   contents: read

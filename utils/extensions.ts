@@ -1,22 +1,18 @@
 import {
   APIRequestContext,
-  BrowserContext,
   test as base,
 } from "@playwright/test"
 import { settings } from "./settings"
 
 type MyFixtures = {
   authorizedRequest: APIRequestContext
-  authorizedContext: BrowserContext
-  invalidUser: User
+  // invalidUser: User
 }
 
-type User = {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-}
+// type User = {
+//   username: string
+//   password: string
+// }
 
 export const test = base.extend<MyFixtures>({
 
@@ -25,15 +21,8 @@ export const test = base.extend<MyFixtures>({
     await use(authorizedRequest as APIRequestContext)
   },
 
-  authorizedContext: async ({}, use) => {
-    let authorizedContext = settings.authorizedContext
-    await use(authorizedContext as BrowserContext)
-  },
-
-  invalidUser: {
-    firstName: "Invalid",
-    lastName: "User",
-    email: "invalid.email",
-    password: "invalid_password",
-  },
+  // invalidUser: {
+  //   username: "invalid_username",
+  //   password: "invalid_password",
+  // },
 })
