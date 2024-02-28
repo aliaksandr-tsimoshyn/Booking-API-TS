@@ -3,9 +3,8 @@ import { APIRequestContext } from "@playwright/test"
 type Settings = {
   baseURL: string,
   authorizedRequest: APIRequestContext | null,
-  myUser: User,
-  testUser: User,
-
+  userID: string,
+  myUser: User
 }
 
 type User = {
@@ -17,15 +16,11 @@ type User = {
 export const settings: Settings = {
   baseURL: process.env.URL || '',
   authorizedRequest: null,
+  userID: '',
   myUser: {
     username: process.env.MYUSERNAME || '',
     password: process.env.MYPASSWORD || '',
     userID: '347'
-  },
-  testUser: {
-    username: '',
-    password: '',
-    userID: ''
   }
 }
 
