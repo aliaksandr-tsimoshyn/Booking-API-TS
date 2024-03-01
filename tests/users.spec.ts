@@ -1,78 +1,64 @@
 import { expect, request} from "@playwright/test"
 import { settings } from "../utils/settings"
 import { test } from "../utils/extensions"
-import { createAuthorizedAPIContext, createRandomString } from "../utils/helpers"
+import { createAuthorizedAPIContext, createRandomString} from "../utils/helpers/general"
+import { User } from "../utils/interfaces"
 
 test.beforeAll(async () => {
   settings.authorizedRequest = await createAuthorizedAPIContext(
     settings.myUser.username,
-    settings.myUser.password
+    settings.myUser.password as string
   )
 })
 
-test.describe(`USERS`, () => {
+test.describe.only(`USERS`, () => {
 
-  test(`Get My User`, async ({ authorizedRequest }) => {
-    const user = await authorizedRequest.get(`${settings.baseURL}/users/${settings.myUser.userID}`)
-    await expect(user, `The user isn't got`).toBeOK()
+  test(`Get My User`, async ({ users }) => {
+    const userData = await users.getUser(settings.myUser.user_id as string)
+    expect(userData.full_name, `Full name isn't ${settings.myUser.full_name}`).toBe(settings.myUser.full_name)
 
-    const userData = await user.json()
-    expect(userData.full_name, `Full name isn't Alex`).toBe(`ALEX`)
-
-    console.log(userData)
+    console.log(`My user is`, userData)
   })
 
-  test(`Create User`, async ({ authorizedRequest }) => {
-    const createUser = await authorizedRequest.post(`${settings.baseURL}/users`, {
-      data: {
-        full_name: await createRandomString(2, 7),
-        email: await createRandomString(2, 8),
-        role: "admin",
-        username: await createRandomString(2, 9),
-        phone_number: await createRandomString(2, 10),
-        password: "1234567"
-      },
-    })
-    await expect(createUser, `The user isn't created`).toBeOK()
+  test(`Create User`, async ({ users }) => {
+    const userData = await users.createUser(`admin`)
 
-    const userData = await createUser.json()
-    settings.userID = userData.user_id
+    console.log(`The following user with ${userData.role} role is created`, userData)
 
-    console.log(userData)
+    await users.deleteUser(userData.user_id as string)
   })
 
-  test(`User Partial Update`, async ({ authorizedRequest }) => {
-    expect(settings.userID, `UserID is empty`).not.toBe('')
-    const userID = settings.userID
+  test(`User Partial Update`, async ({ authorizedRequest, users }) => {
+    const userData = await users.createUser(`admin`)
 
     const newFullName = await createRandomString(2, 7)
-    console.log(newFullName)
+    console.log(`New generated data is`, newFullName)
 
-    const updateUser = await authorizedRequest.patch(`${settings.baseURL}/users/${userID}`, {
+    const updateUser = await authorizedRequest.patch(`${settings.baseURL}/users/${userData.user_id}`, {
       data: {
         full_name: newFullName
       },
     })
     await expect(updateUser, `The user isn't updated`).toBeOK()
 
-    const newUserData = await updateUser.json()
+    const newUserData = await updateUser.json() as User
     expect(newUserData.full_name, `Full name isn't updated`).toBe(newFullName.toUpperCase())
 
-    console.log(newUserData)
-  
+    console.log(`Updated user data is`, newUserData)
+
+    await users.deleteUser(userData.user_id as string)
   })
 
-  test(`User Full Update`, async ({ authorizedRequest }) => {
-    expect(settings.userID, `UserID is empty`).not.toBe('')
-    const userID = settings.userID
+  test(`User Full Update`, async ({ authorizedRequest, users }) => {
+    const userData = await users.createUser(`admin`)
 
     const newFullName = await createRandomString(2, 7)
     const newEmail = await createRandomString(2, 8)
     const newUsername = await createRandomString(2, 9)
     const newPhoneNumber = await createRandomString(2, 10)
-    console.log(newFullName, newEmail, newUsername, newPhoneNumber)
+    console.log(`New generated data is`, newFullName, newEmail, newUsername, newPhoneNumber)
 
-    const updateUser = await authorizedRequest.put(`${settings.baseURL}/users/${userID}`, {
+    const updateUser = await authorizedRequest.put(`${settings.baseURL}/users/${userData.user_id}`, {
       data: {
         full_name: newFullName,
         email: newEmail,
@@ -83,28 +69,21 @@ test.describe(`USERS`, () => {
     })
     await expect(updateUser, `The user isn't updated`).toBeOK()
 
-    const newUserData = await updateUser.json()
+    const newUserData = await updateUser.json() as User
     expect(newUserData.full_name, `Full name isn't updated`).toBe(newFullName.toUpperCase())
     expect(newUserData.email, `Email isn't updated`).toBe(newEmail)
     expect(newUserData.username, `Username isn't updated`).toBe(newUsername)
     expect(newUserData.phone_number, `Phone number isn't updated`).toBe(newPhoneNumber)
 
-    console.log(newUserData)
-  
+    console.log(`Updated user data is`, newUserData)
+
+    await users.deleteUser(userData.user_id as string as string)
   })
 
-  test(`Delete User`, async ({ authorizedRequest }) => {
-    expect(settings.userID, `UserID is empty`).not.toBe('')
-    const userID = settings.userID
+  test(`Delete User`, async ({ users }) => {
+    const userData = await users.createUser(`admin`)
 
-    const deleteUser = (await authorizedRequest.delete(`${settings.baseURL}/users/${userID}`)).status()
-    expect(deleteUser, `The user isn't deleted`).toBe(204)
-
-    console.log(`The user with user_id ${userID} is deleted with status code ${deleteUser}`)
-
-    const getDeletedUser = (await authorizedRequest.get(`${settings.baseURL}/users/${userID}`)).status()
-    expect(getDeletedUser, `The user still exists`).toBe(404)
-  
+    await users.deleteUser(userData.user_id as string) 
   })
 
 })

@@ -1,28 +1,26 @@
 import { APIRequestContext } from "@playwright/test"
+import { User } from "../utils/interfaces"
 
 type Settings = {
   baseURL: string,
-  authorizedRequest: APIRequestContext | null,
-  userID: string,
+  authorizedRequest: APIRequestContext | null
   myUser: User
-}
-
-type User = {
-  username: string,
-  password: string,
-  userID: string
 }
 
 export const settings: Settings = {
   baseURL: process.env.URL || '',
   authorizedRequest: null,
-  userID: '',
   myUser: {
+    full_name: 'ALEX',
+    email: 'alex@gmail.com',
+    role: 'admin',
     username: process.env.MYUSERNAME || '',
     password: process.env.MYPASSWORD || '',
-    userID: '347'
+    phone_number: '1111111',
+    user_id: '347',
   }
 }
+
 
 // {
 //   "full_name": "ALEX",

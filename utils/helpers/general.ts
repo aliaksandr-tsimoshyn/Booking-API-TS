@@ -1,5 +1,5 @@
-import { APIRequestContext, expect, request } from "@playwright/test"
-import { settings } from "./settings"
+import { expect, request } from "@playwright/test"
+import { settings } from "../settings"
 
 
 export async function createAuthorizedAPIContext(username: string, password: string) {
@@ -28,4 +28,5 @@ export async function createRandomString(start: number, end: number) {
 
   return randomString
 }
+
 
