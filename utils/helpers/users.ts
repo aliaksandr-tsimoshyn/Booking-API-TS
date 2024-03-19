@@ -10,8 +10,7 @@ constructor(public readonly authorizedRequest: APIRequestContext) {
 }
  
 async createUser(role: string) {
-  const context = await request.newContext()
-  const createUser = await context.post(`${settings.baseURL}/users`, {
+  const createUser = await this.authorizedRequest.post(`${settings.baseURL}/users`, {
     data: {
       full_name: await createRandomString(2, 7),
       email: await createRandomString(2, 8),
@@ -37,6 +36,28 @@ async getUser(userID: string) {
   const userData = await getUser.json() as User
 
   return userData
+}
+
+async patchUser(userID: string, newData: {}) {
+  const patchUser = await this.authorizedRequest.patch(`${settings.baseURL}/users/${userID}`, {
+    data: newData,
+    })
+  await expect(patchUser, `The user isn't updated`).toBeOK()
+
+  const newUserData = await patchUser.json() as User
+
+  return newUserData
+}
+
+async putUser(userID: string, newData: {}) {
+  const putUser = await this.authorizedRequest.put(`${settings.baseURL}/users/${userID}`, {
+    data: newData,
+  })
+  await expect(putUser, `The user isn't updated`).toBeOK()
+
+  const newUserData = await putUser.json() as User
+
+  return newUserData
 }
 
 async deleteUser(userID: string) {

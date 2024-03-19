@@ -4,10 +4,14 @@ import {
 } from "@playwright/test"
 import { settings } from "./settings"
 import { Users } from "./helpers/users"
+import { Flights } from "./helpers/flights"
+import { User } from "./interfaces"
 
 type MyFixtures = {
   authorizedRequest: APIRequestContext
   users: Users
+  flights: Flights
+  newUser: User
   // invalidUser: User
 }
 
@@ -25,6 +29,16 @@ export const test = base.extend<MyFixtures>({
 
   users: async ({ authorizedRequest }, use) => {
     await use(new Users(authorizedRequest))
+  },
+
+  newUser: async ({ users }, use) => {
+    const newUser = await users.createUser('admin')
+    await use(newUser)
+    await users.deleteUser(newUser.user_id as string)
+  },
+
+  flights: async ({ authorizedRequest }, use) => {
+    await use(new Flights(authorizedRequest))
   },
 
   // invalidUser: {
