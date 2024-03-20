@@ -7,4 +7,5 @@ node_modules/
 /allure-report/
 /screenshots/
 .env
+.vscode
 
