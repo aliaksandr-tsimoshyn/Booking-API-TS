@@ -1,11 +1,8 @@
-import {
-  APIRequestContext,
-  test as base,
-} from "@playwright/test"
-import { settings } from "./settings"
-import { Users } from "./helpers/users"
-import { Flights } from "./helpers/flights"
-import { User } from "./interfaces"
+import { APIRequestContext, test as base } from '@playwright/test'
+import { settings } from './settings'
+import { Users } from './helpers/users'
+import { Flights } from './helpers/flights'
+import { User } from './interfaces'
 
 type MyFixtures = {
   authorizedRequest: APIRequestContext
@@ -21,7 +18,6 @@ type MyFixtures = {
 // }
 
 export const test = base.extend<MyFixtures>({
-
   authorizedRequest: async ({}, use) => {
     let authorizedRequest = settings.authorizedRequest
     await use(authorizedRequest as APIRequestContext)

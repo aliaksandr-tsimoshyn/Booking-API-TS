@@ -1,33 +1,33 @@
-import { APIRequestContext, expect, request } from "@playwright/test"
-import { settings } from "../settings"
-import { Flight } from "../interfaces"
+import { APIRequestContext, expect, request } from '@playwright/test'
+import { settings } from '../settings'
+import { Flight } from '../interfaces'
 
 export class Flights {
- 
-constructor(public readonly authorizedRequest: APIRequestContext) {
-  this.authorizedRequest = authorizedRequest
-}
- 
-async getAllFlights() {
-  const flights = await this.authorizedRequest.get(`${settings.baseURL}/flights`)
-  await expect(flights, `Get all flights request is failed`).toBeOK()
+  constructor(public readonly authorizedRequest: APIRequestContext) {
+    this.authorizedRequest = authorizedRequest
+  }
 
-  const flightsData = await flights.json() as Flight
+  async getAllFlights() {
+    const flights = await this.authorizedRequest.get(`${settings.baseURL}/flights`)
+    await expect(flights, `Get all flights request is failed`).toBeOK()
 
-  console.log(`Existing flights are`, flightsData.objects)
+    const flightsData = (await flights.json()) as Flight
 
-  return flightsData
-}
+    console.log(`Existing flights are`, flightsData.objects)
 
-async getUserBookings(userID: string) {
-  const bookings = await this.authorizedRequest.get(`${settings.baseURL}/users/${userID}/bookings`)
-  await expect(bookings, `Get bookings request is failed`).toBeOK()
+    return flightsData
+  }
 
-  const bookingsData = await bookings.json() 
+  async getUserBookings(userID: string) {
+    const bookings = await this.authorizedRequest.get(
+      `${settings.baseURL}/users/${userID}/bookings`
+    )
+    await expect(bookings, `Get bookings request is failed`).toBeOK()
 
-  console.log(`User bookings are`, bookingsData)
+    const bookingsData = await bookings.json()
 
-  return bookingsData
-}
+    console.log(`User bookings are`, bookingsData)
 
+    return bookingsData
+  }
 }

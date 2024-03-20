@@ -1,73 +1,73 @@
-import { APIRequestContext, expect, request } from "@playwright/test"
-import { settings } from "../settings"
-import { User } from "../interfaces"
-import { createRandomString } from "./general"
+import { APIRequestContext, expect, request } from '@playwright/test'
+import { settings } from '../settings'
+import { User } from '../interfaces'
+import { createRandomString } from './general'
 
 export class Users {
- 
-constructor(public readonly authorizedRequest: APIRequestContext) {
-  this.authorizedRequest = authorizedRequest
-}
- 
-async createUser(role: string) {
-  const createUser = await this.authorizedRequest.post(`${settings.baseURL}/users`, {
-    data: {
-      full_name: await createRandomString(2, 7),
-      email: await createRandomString(2, 8),
-      role: role,
-      username: await createRandomString(2, 9),
-      phone_number: await createRandomString(2, 10),
-      password: "1234567"
-    },
-  })
-  await expect(createUser, `The user isn't created`).toBeOK()
+  constructor(public readonly authorizedRequest: APIRequestContext) {
+    this.authorizedRequest = authorizedRequest
+  }
 
-  const userData = await createUser.json() as User
-
-  console.log(`The following user with ${userData.role} role is created`, userData)
-  
-  return userData
-}
-
-async getUser(userID: string) {
-  const getUser = await this.authorizedRequest.get(`${settings.baseURL}/users/${userID}`)
-  await expect(getUser, `Get user request is failed`).toBeOK()
-
-  const userData = await getUser.json() as User
-
-  return userData
-}
-
-async patchUser(userID: string, newData: {}) {
-  const patchUser = await this.authorizedRequest.patch(`${settings.baseURL}/users/${userID}`, {
-    data: newData,
+  async createUser(role: string) {
+    const createUser = await this.authorizedRequest.post(`${settings.baseURL}/users`, {
+      data: {
+        full_name: await createRandomString(2, 7),
+        email: await createRandomString(2, 8),
+        role: role,
+        username: await createRandomString(2, 9),
+        phone_number: await createRandomString(2, 10),
+        password: '1234567',
+      },
     })
-  await expect(patchUser, `The user isn't updated`).toBeOK()
+    await expect(createUser, `The user isn't created`).toBeOK()
 
-  const newUserData = await patchUser.json() as User
+    const userData = (await createUser.json()) as User
 
-  return newUserData
-}
+    console.log(`The following user with ${userData.role} role is created`, userData)
 
-async putUser(userID: string, newData: {}) {
-  const putUser = await this.authorizedRequest.put(`${settings.baseURL}/users/${userID}`, {
-    data: newData,
-  })
-  await expect(putUser, `The user isn't updated`).toBeOK()
+    return userData
+  }
 
-  const newUserData = await putUser.json() as User
+  async getUser(userID: string) {
+    const getUser = await this.authorizedRequest.get(`${settings.baseURL}/users/${userID}`)
+    await expect(getUser, `Get user request is failed`).toBeOK()
 
-  return newUserData
-}
+    const userData = (await getUser.json()) as User
 
-async deleteUser(userID: string) {
-  const deleteUser = await this.authorizedRequest.delete(`${settings.baseURL}/users/${userID}`)
-  expect(deleteUser, `The user isn't deleted`).toBeOK()
+    return userData
+  }
 
-  console.log(`The user with user_id ${userID} is deleted`)
+  async patchUser(userID: string, newData: {}) {
+    const patchUser = await this.authorizedRequest.patch(`${settings.baseURL}/users/${userID}`, {
+      data: newData,
+    })
+    await expect(patchUser, `The user isn't updated`).toBeOK()
 
-  const getDeletedUser = (await this.authorizedRequest.get(`${settings.baseURL}/users/${userID}`)).status()
-  expect(getDeletedUser, `The user still exists`).toBe(404)
-}
+    const newUserData = (await patchUser.json()) as User
 
+    return newUserData
+  }
+
+  async putUser(userID: string, newData: {}) {
+    const putUser = await this.authorizedRequest.put(`${settings.baseURL}/users/${userID}`, {
+      data: newData,
+    })
+    await expect(putUser, `The user isn't updated`).toBeOK()
+
+    const newUserData = (await putUser.json()) as User
+
+    return newUserData
+  }
+
+  async deleteUser(userID: string) {
+    const deleteUser = await this.authorizedRequest.delete(`${settings.baseURL}/users/${userID}`)
+    expect(deleteUser, `The user isn't deleted`).toBeOK()
+
+    console.log(`The user with user_id ${userID} is deleted`)
+
+    const getDeletedUser = (
+      await this.authorizedRequest.get(`${settings.baseURL}/users/${userID}`)
+    ).status()
+    expect(getDeletedUser, `The user still exists`).toBe(404)
+  }
 }

@@ -1,6 +1,6 @@
-import { defineConfig } from "@playwright/test"
-import dotenv from "dotenv"
-import { settings } from "./utils/settings"
+import { defineConfig } from '@playwright/test'
+import dotenv from 'dotenv'
+import { settings } from './utils/settings'
 
 dotenv.config({
   path: `.env`,
@@ -13,7 +13,7 @@ dotenv.config({
 console.log(settings.baseURL)
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: './tests',
 
   retries: 0,
 
@@ -25,13 +25,13 @@ export default defineConfig({
     timeout: 30 * 1000,
   },
 
-  reporter: "html",
+  reporter: 'html',
 
   use: {
-    browserName: "chromium",
+    browserName: 'chromium',
     headless: true,
-    screenshot: "on",
-    trace: "on",
-    video: "on",
+    screenshot: 'on',
+    trace: 'on',
+    video: 'on',
   },
 })
