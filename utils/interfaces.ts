@@ -1,8 +1,8 @@
-export interface Flight {
-  objects: [SingleFlight]
+export interface Flights {
+  objects: [Flight]
 }
 
-export interface SingleFlight {
+export interface Flight {
   flight_id: number
   flight_no: string
   aircraft_code: string

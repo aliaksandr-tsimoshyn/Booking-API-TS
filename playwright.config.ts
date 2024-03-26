@@ -1,6 +1,5 @@
 import { defineConfig } from '@playwright/test'
 import dotenv from 'dotenv'
-import { settings } from './utils/settings'
 
 dotenv.config({
   path: `.env`,
@@ -9,8 +8,6 @@ dotenv.config({
   //path: './envs/.env' + (process.env.ENV ? '.' + process.env.ENV : '')
   //terminal: $env:ENV="prod"
 })
-
-console.log(settings.baseURL)
 
 export default defineConfig({
   testDir: './tests',
