@@ -4,16 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "codegen": "npx playwright codegen",
-    "webInspector": "npx playwright test --debug",
-    "allTests": "npx playwright test",
-    "apiTests": "npx playwright test --grep @api",
-    "genAllure": "allure generate ./allure-results --clean",
-    "openAllure": "allure open ./allure-report",
-    "openHTML": "npx playwright show-report"
+    "allTests": "npx playwright test"
   },
   "keywords": [],
-  "author": "",
+  "author": "Aliaksandr Tsimoshyn",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.39.0",

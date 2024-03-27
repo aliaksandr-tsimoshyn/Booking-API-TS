@@ -1,4 +1,4 @@
-import { APIRequestContext, expect, request } from '@playwright/test'
+import { expect } from '@playwright/test'
 import { roles, settings } from '../settings'
 import { Flights } from '../interfaces'
 import { selectAuthorizedAPIContext } from './functions'

@@ -23,12 +23,4 @@ export default defineConfig({
   },
 
   reporter: 'html',
-
-  use: {
-    browserName: 'chromium',
-    headless: true,
-    screenshot: 'on',
-    trace: 'on',
-    video: 'on',
-  },
 })

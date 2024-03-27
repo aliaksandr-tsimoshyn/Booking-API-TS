@@ -2,7 +2,7 @@ import { settings, testUsers, roles } from '../utils/settings'
 import { test } from '../utils/fixtures'
 import { createAuthorizedAPIContext } from '../utils/helpers/functions'
 
-test.beforeAll(async ({ userService }) => {
+test.beforeAll(async ({}) => {
   settings.adminAPIContext = await createAuthorizedAPIContext(
     testUsers.admin.username,
     testUsers.admin.password as string

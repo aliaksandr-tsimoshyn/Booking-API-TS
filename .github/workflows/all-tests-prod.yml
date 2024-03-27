@@ -1,13 +1,15 @@
-name: allTestsProd
+name: allTests
 on:
   push:
     branches: [main, master]
   workflow_dispatch:
 
 env:
-  URL: ${{ vars.URLPROD }}
-  EMAIL: ${{ vars.MYUSERNAME }}
-  PASSWORD: ${{ vars.MYPASSWORD }}
+  URL: ${{ vars.URL }}
+  ADMINNAME: ${{ vars.ADMINNAME }}
+  ADMINPASSWORD: ${{ vars.ADMINPASSWORD }}
+  CUSTOMERNAME: ${{ vars.CUSTOMERNAME }}
+  CUSTOMERPASSWORD: ${{ vars.CUSTOMERPASSWORD }}
 
 permissions:
   contents: read
