@@ -40,19 +40,19 @@ test.describe(`USERS`, () => {
 
   // Test data for Create User test
   const testData2 = [
-    { role: roles.customer, statusCode: 201, authRole: roles.admin },
-    { role: roles.customer, statusCode: 201, authRole: roles.customer },
+    { statusCode: 201, authRole: roles.admin },
+    { statusCode: 201, authRole: roles.customer },
   ]
 
   for (const data of testData2) {
     test(`Create User By ${data.authRole}`, async ({ userService }) => {
-      const userData = await userService.createUser(data.role, data.statusCode, data.authRole)
+      const userData = await userService.createUser(roles.customer, data.statusCode, data.authRole)
 
       await userService.deleteUser(userData.user_id as string, 204)
     })
   }
 
-  // Test data for Patch User test
+  // Test data for Patch and Put User tests
   const testData3 = [
     { statusCode: 200, authRole: roles.admin },
     { statusCode: 403, authRole: roles.customer },
@@ -81,13 +81,7 @@ test.describe(`USERS`, () => {
     })
   }
 
-  // Test data for Put User test
-  const testData4 = [
-    { statusCode: 200, authRole: roles.admin },
-    { statusCode: 403, authRole: roles.customer },
-  ]
-
-  for (const data of testData4) {
+  for (const data of testData3) {
     test(`User Full Update by ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
         full_name: await userService.createRandomString(2, 7),
@@ -117,26 +111,18 @@ test.describe(`USERS`, () => {
     })
   }
 
-  // Test data for Delete User test
-  const testData5 = [
-    { role: roles.customer, statusCode: 204, authRole: roles.admin },
-    { role: roles.customer, statusCode: 403, authRole: roles.customer },
-  ]
-// разбить delete на 2 теста, т.к. один из юзеров всегда остается в базе
-  for (const data of testData5) {
-    test(`Delete User By ${data.authRole}`, async ({ userService, newCustomer }) => {
-      const userData = await userService.createUser(data.role, 201)
+  test(`Delete User By Admin`, async ({ userService }) => {
+    const userData = await userService.createUser(roles.customer, 201)
 
-      await userService.deleteUser(userData.user_id as string, data.statusCode, data.authRole)
+    await userService.deleteUser(userData.user_id as string, 204)
+    console.log(`The user with user_id ${userData.user_id} is deleted`)
 
-      if (data.authRole === roles.admin) {
-        console.log(`The user with user_id ${userData.user_id} is deleted`)
-        await userService.getUser(userData.user_id as string, 404)
-        console.log(`The user ${userData.user_id} doesn't exist`)
-      } else if (data.authRole === roles.customer) {
-        await userService.deleteUser(newCustomer.user_id as string, data.statusCode, data.authRole)
-        console.log(`Delete user request is forbidden for ${data.authRole}`)
-      }
-    })
-  }
+    await userService.getUser(userData.user_id as string, 404)
+    console.log(`The user with user_id ${userData.user_id} doesn't exist`)
+  })
+
+  test(`Delete User By Customer`, async ({ userService, newCustomer }) => {
+    await userService.deleteUser(newCustomer.user_id as string, 403, roles.customer)
+    console.log(`Delete user request is forbidden for ${roles.customer}`)
+  })
 })

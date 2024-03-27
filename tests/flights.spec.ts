@@ -26,16 +26,16 @@ test.describe(`FLIGHTS`, () => {
     })
   }
 
-  // Test data for Get My Bookings test
+  // Test data for Get User Bookings test
   const testData2 = [
     { statusCode: 200, authRole: roles.admin },
     { statusCode: 403, authRole: roles.customer },
   ]
 
   for (const data of testData2) {
-    test(`Get My Bookings By ${data.authRole}`, async ({ flightService }) => {
+    test(`Get User Bookings By ${data.authRole}`, async ({ flightService, newCustomer }) => {
       const bookingsData = await flightService.getUserBookings(
-        testUsers.admin.user_id as string,
+        newCustomer.user_id as string,
         data.statusCode,
         data.authRole
       )
@@ -43,7 +43,7 @@ test.describe(`FLIGHTS`, () => {
       if (data.authRole === roles.admin) {
         console.log(`User bookings are`, bookingsData)
       } else if (data.authRole === roles.customer) {
-        console.log(`Get admin bookings request is forbidden for ${data.authRole}`)
+        console.log(`Get user bookings request is forbidden for ${data.authRole}`)
       }
     })
   }
