@@ -1,18 +1,20 @@
 import { APIRequestContext, expect, request } from '@playwright/test'
 import { settings, roles } from '../settings'
 import { User } from '../interfaces'
-import { Base } from './base'
+import { selectAuthorizedAPIContext, createRandomString } from './functions'
 
-export class UserService extends Base {
+export class UserService {
   async createUser(role: string, statusCode: number, authRole = roles.admin) {
-    const createUser = await (await this.authorizedAPIContext(authRole)).post(`${settings.baseURL}/users`, {
+    const context = await selectAuthorizedAPIContext(authRole)
+    
+    const createUser = await context.post(`${settings.baseURL}/users`, {
       data: {
-        full_name: await this.createRandomString(2, 7),
-        email: await this.createRandomString(2, 8),
+        full_name: await createRandomString(2, 7),
+        email: await createRandomString(2, 8),
         role: role,
-        username: await this.createRandomString(2, 9),
-        phone_number: await this.createRandomString(2, 10),
-        password: await this.createRandomString(2, 11),
+        username: await createRandomString(2, 9),
+        phone_number: await createRandomString(2, 10),
+        password: await createRandomString(2, 11),
       },
     })
 
@@ -26,7 +28,9 @@ export class UserService extends Base {
   }
 
   async getUser(userID: string, statusCode: number, authRole = roles.admin) {
-    const getUser = await (await this.authorizedAPIContext(authRole)).get(`${settings.baseURL}/users/${userID}`)
+    const context = await selectAuthorizedAPIContext(authRole)
+    
+    const getUser = await context.get(`${settings.baseURL}/users/${userID}`)
     await expect(getUser.status(), `Get user request is failed`).toBe(statusCode)
 
     const userData = (await getUser.json()) as User
@@ -35,7 +39,9 @@ export class UserService extends Base {
   }
 
   async patchUser(userID: string, newData: {}, statusCode: number, authRole = roles.admin) {
-    const patchUser = await (await this.authorizedAPIContext(authRole)).patch(`${settings.baseURL}/users/${userID}`, {
+    const context = await selectAuthorizedAPIContext(authRole)
+
+    const patchUser = await context.patch(`${settings.baseURL}/users/${userID}`, {
       data: newData,
     })
     await expect(patchUser.status(), `The user isn't updated`).toBe(statusCode)
@@ -46,7 +52,9 @@ export class UserService extends Base {
   }
 
   async putUser(userID: string, newData: {}, statusCode: number, authRole = roles.admin) {
-    const putUser = await (await this.authorizedAPIContext(authRole)).put(`${settings.baseURL}/users/${userID}`, {
+    const context = await selectAuthorizedAPIContext(authRole)
+
+    const putUser = await context.put(`${settings.baseURL}/users/${userID}`, {
       data: newData,
     })
     await expect(putUser.status(), `The user isn't updated`).toBe(statusCode)
@@ -57,7 +65,9 @@ export class UserService extends Base {
   }
 
   async deleteUser(userID: string, statusCode: number, authRole = roles.admin) {
-    const deleteUser = await (await this.authorizedAPIContext(authRole)).delete(`${settings.baseURL}/users/${userID}`)
+    const context = await selectAuthorizedAPIContext(authRole)
+    
+    const deleteUser = await context.delete(`${settings.baseURL}/users/${userID}`)
     expect(deleteUser.status(), `The user isn't deleted`).toBe(statusCode)
   }
 }

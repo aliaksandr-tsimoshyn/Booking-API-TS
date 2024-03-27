@@ -1,8 +1,7 @@
 import { APIRequestContext, expect, request } from '@playwright/test'
 import { settings, roles } from '../settings'
 
-export class Base {
-  async createAuthorizedAPIContext(username: string, password: string) {
+  export async function createAuthorizedAPIContext(username: string, password: string) {
     const context = await request.newContext()
     const login = await context.post(`${settings.baseURL}/token`, {
       form: {
@@ -23,13 +22,13 @@ export class Base {
     return authorizedAPIContext
   }
 
-  async createRandomString(start: number, end: number) {
+  export async function createRandomString(start: number, end: number) {
     const randomString = Math.random().toString(36).substring(start, end)
 
     return randomString
   }
 
-  async authorizedAPIContext(authRole = roles.admin) {
+  export async function selectAuthorizedAPIContext(authRole = roles.admin) {
     expect(settings.adminAPIContext, `adminAPIContext is null`).not.toBeNull()
     expect(settings.customerAPIContext, `customerAPIContext is null`).not.toBeNull()
     
@@ -45,4 +44,4 @@ export class Base {
     
     return authorizedAPIContext
   }
-}
+

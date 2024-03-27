@@ -1,14 +1,15 @@
 import { expect } from '@playwright/test'
 import { settings, testUsers, roles } from '../utils/settings'
 import { test } from '../utils/fixtures'
+import { createAuthorizedAPIContext, createRandomString } from '../utils/helpers/functions'
 
 test.beforeAll(async ({ userService }) => {
-  settings.adminAPIContext = await userService.createAuthorizedAPIContext(
+  settings.adminAPIContext = await createAuthorizedAPIContext(
     testUsers.admin.username,
     testUsers.admin.password as string
   )
 
-  settings.customerAPIContext = await userService.createAuthorizedAPIContext(
+  settings.customerAPIContext = await createAuthorizedAPIContext(
     testUsers.customer.username,
     testUsers.customer.password as string
   )
@@ -61,7 +62,7 @@ test.describe(`USERS`, () => {
   for (const data of testData3) {
     test(`User Partial Update By ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
-        full_name: await userService.createRandomString(2, 7),
+        full_name: await createRandomString(2, 7),
       }
       console.log(`New full name is`, newData.full_name)
 
@@ -84,11 +85,11 @@ test.describe(`USERS`, () => {
   for (const data of testData3) {
     test(`User Full Update by ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
-        full_name: await userService.createRandomString(2, 7),
-        email: await userService.createRandomString(2, 8),
+        full_name: await createRandomString(2, 7),
+        email: await createRandomString(2, 8),
         role: roles.customer,
-        username: await userService.createRandomString(2, 9),
-        phone_number: await userService.createRandomString(2, 10),
+        username: await createRandomString(2, 9),
+        phone_number: await createRandomString(2, 10),
       }
       console.log(`New generated data is`, newData)
 
