@@ -22,15 +22,17 @@ export const test = base.extend<MyFixtures>({
 
   newCustomer: async ({ userService }, use) => {
     const newCustomer = await userService.createUser(roles.customer, 201)
+    console.log(`Temporary customer with user_id ${newCustomer.user_id} is created:`, newCustomer)
     await use(newCustomer)
     await userService.deleteUser(newCustomer.user_id as string, 204)
-    console.log(`The user with user_id ${newCustomer.user_id} is deleted`)
+    console.log(`Temporary customer with user_id ${newCustomer.user_id} is deleted`)
   },
 
   newAdmin: async ({ userService }, use) => {
     const newAdmin = await userService.createUser(roles.admin, 201)
+    console.log(`Temporary admin with user_id ${newAdmin.user_id} is created:`, newAdmin)
     await use(newAdmin)
     await userService.deleteUser(newAdmin.user_id as string, 204)
-    console.log(`The user with user_id ${newAdmin.user_id} is deleted`)
+    console.log(`Temporary admin with user_id ${newAdmin.user_id} is deleted`)
   },
 })

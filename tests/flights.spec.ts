@@ -23,7 +23,9 @@ test.describe(`FLIGHTS`, () => {
 
   for (const data of testData1) {
     test(`Get All Flights By ${data.authRole}`, async ({ flightService }) => {
-      await flightService.getAllFlights(data.statusCode, data.authRole)
+      const flightsData = await flightService.getAllFlights(data.statusCode, data.authRole)
+
+      console.log(`All flights:`, flightsData.objects)
     })
   }
 
@@ -42,9 +44,9 @@ test.describe(`FLIGHTS`, () => {
       )
 
       if (data.authRole === roles.admin) {
-        console.log(`User bookings are`, bookingsData)
+        console.log(`Bookings of the user with user_id ${newCustomer.user_id}:`, bookingsData)
       } else if (data.authRole === roles.customer) {
-        console.log(`Get user bookings request is forbidden for ${data.authRole}`)
+        console.log(`Get user bookings request is forbidden for ${roles.customer}`)
       }
     })
   }

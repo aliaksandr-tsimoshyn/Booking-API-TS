@@ -31,10 +31,10 @@ test.describe(`USERS`, () => {
       )
 
       if (data.authRole === roles.admin) {
-        expect(userData.full_name, `Full name isn't ${newCustomer.full_name}`).toBe(newCustomer.full_name)
+        expect(userData.full_name, `Incorrect user is got`).toBe(newCustomer.full_name)
         console.log(`The following user is got`, userData)
       } else if (data.authRole === roles.customer) {
-        console.log(`Get user request is forbidden for ${data.authRole}`)
+        console.log(`Get user request is forbidden for ${roles.customer}`)
       }
     })
   }
@@ -48,8 +48,11 @@ test.describe(`USERS`, () => {
   for (const data of testData2) {
     test(`Create User By ${data.authRole}`, async ({ userService }) => {
       const userData = await userService.createUser(roles.customer, data.statusCode, data.authRole)
+      console.log(`The user with user_id ${userData.user_id} is created:`, userData)
 
       await userService.deleteUser(userData.user_id as string, 204)
+      console.log(`The user with user_id ${userData.user_id} is deleted`)
+      
     })
   }
 
@@ -64,9 +67,9 @@ test.describe(`USERS`, () => {
       const newData = {
         full_name: await createRandomString(2, 7),
       }
-      console.log(`New full name is`, newData.full_name)
+      console.log(`New data:`, newData)
 
-      const newUserData = await userService.patchUser(
+      const updatedUserData = await userService.patchUser(
         newCustomer.user_id as string,
         newData,
         data.statusCode,
@@ -74,10 +77,10 @@ test.describe(`USERS`, () => {
       )
 
       if (data.authRole === roles.admin) {
-        expect(newUserData.full_name, `Full name isn't updated`).toBe(newData.full_name.toUpperCase())
-        console.log(`New user data is`, newUserData)
+        expect(updatedUserData.full_name, `Full name isn't updated`).toBe(newData.full_name.toUpperCase())
+        console.log(`Updated user data:`, updatedUserData)
       } else if (data.authRole === roles.customer) {
-        console.log(`Patch user request is forbidden for ${data.authRole}`)
+        console.log(`Patch user request is forbidden for ${roles.customer}`)
       }
     })
   }
@@ -91,9 +94,9 @@ test.describe(`USERS`, () => {
         username: await createRandomString(2, 9),
         phone_number: await createRandomString(2, 10),
       }
-      console.log(`New generated data is`, newData)
+      console.log(`New data:`, newData)
 
-      const newUserData = await userService.putUser(
+      const updatedUserData = await userService.putUser(
         newCustomer.user_id as string,
         newData,
         data.statusCode,
@@ -101,29 +104,28 @@ test.describe(`USERS`, () => {
       )
 
       if (data.authRole === roles.admin) {
-        expect(newUserData.full_name, `Full name isn't updated`).toBe(newData.full_name.toUpperCase())
-        expect(newUserData.email, `Email isn't updated`).toBe(newData.email)
-        expect(newUserData.username, `Username isn't updated`).toBe(newData.username)
-        expect(newUserData.phone_number, `Phone number isn't updated`).toBe(newData.phone_number)
-        console.log(`New user data is`, newUserData)
+        expect(updatedUserData.full_name, `Full name isn't updated`).toBe(newData.full_name.toUpperCase())
+        expect(updatedUserData.email, `Email isn't updated`).toBe(newData.email)
+        expect(updatedUserData.username, `Username isn't updated`).toBe(newData.username)
+        expect(updatedUserData.phone_number, `Phone number isn't updated`).toBe(newData.phone_number)
+        console.log(`Updated user data:`, updatedUserData)
       } else if (data.authRole === roles.customer) {
-        console.log(`Put user request is forbidden for ${data.authRole}`)
+        console.log(`Put user request is forbidden for ${roles.customer}`)
       }
     })
   }
 
   test(`Delete User By Admin`, async ({ userService }) => {
     const userData = await userService.createUser(roles.customer, 201)
+    console.log(`The user with user_id ${userData.user_id} is created:`, userData)
 
     await userService.deleteUser(userData.user_id as string, 204)
-    console.log(`The user with user_id ${userData.user_id} is deleted`)
-
     await userService.getUser(userData.user_id as string, 404)
-    console.log(`The user with user_id ${userData.user_id} doesn't exist`)
+    console.log(`The user with user_id ${userData.user_id} is deleted`)
   })
 
   test(`Delete User By Customer`, async ({ userService, newCustomer }) => {
     await userService.deleteUser(newCustomer.user_id as string, 403, roles.customer)
-    console.log(`Delete user request is forbidden for ${roles.customer}`)
+    console.log(`Delete user request is forbidden for customer`)
   })
 })

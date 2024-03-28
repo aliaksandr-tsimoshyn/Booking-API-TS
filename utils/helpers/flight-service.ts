@@ -12,8 +12,6 @@ export class FlightService {
 
     const flightsData = (await flights.json()) as Flights
 
-    console.log(`Existing flights are`, flightsData.objects)
-
     return flightsData
   }
 
@@ -21,7 +19,7 @@ export class FlightService {
     const context = await selectAuthorizedAPIContext(authRole)
     
     const bookings = await context.get(`${settings.baseURL}/users/${userID}/bookings`)
-    await expect(bookings.status(), `Get bookings request is failed`).toBe(statusCode)
+    await expect(bookings.status(), `Get user bookings request is failed`).toBe(statusCode)
 
     const bookingsData = await bookings.json()
 

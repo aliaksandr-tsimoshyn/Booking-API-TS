@@ -6,7 +6,7 @@ import { selectAuthorizedAPIContext, createRandomString } from './functions'
 export class UserService {
   async createUser(role: string, statusCode: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
-    
+
     const createUser = await context.post(`${settings.baseURL}/users`, {
       data: {
         full_name: await createRandomString(2, 7),
@@ -17,19 +17,16 @@ export class UserService {
         password: await createRandomString(2, 11),
       },
     })
-
     await expect(createUser.status(), `The user isn't created`).toBe(statusCode)
 
     const userData = (await createUser.json()) as User
-
-    console.log(`The following user with ${userData.role} role is created`, userData)
-
+    
     return userData
   }
 
   async getUser(userID: string, statusCode: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
-    
+
     const getUser = await context.get(`${settings.baseURL}/users/${userID}`)
     await expect(getUser.status(), `Get user request is failed`).toBe(statusCode)
 
@@ -66,7 +63,7 @@ export class UserService {
 
   async deleteUser(userID: string, statusCode: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
-    
+
     const deleteUser = await context.delete(`${settings.baseURL}/users/${userID}`)
     expect(deleteUser.status(), `The user isn't deleted`).toBe(statusCode)
   }
